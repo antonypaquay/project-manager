@@ -4,7 +4,7 @@
   "description": "",
   "main": "js-only.js",
   "scripts": {
-    "start": "tsc using-ts.ts && live-server --port=3000",
+    "start": "live-server --port=3000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
