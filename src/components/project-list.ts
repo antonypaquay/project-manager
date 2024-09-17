@@ -9,7 +9,7 @@ import { ProjectItem } from './project-item';
 export class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget {
     assignedProjects: Project[];
 
-    constructor(private type: 'active' | 'done') {
+    constructor(private type: 'new' | 'active' | 'review' | 'done') {
         super('project-list', 'app', false, `${type}-projects`);
 
 
@@ -32,7 +32,19 @@ export class ProjectList extends Component<HTMLDivElement, HTMLElement> implemen
     @AutoBind
     dropHandler(event: DragEvent) {
         const prjId = event.dataTransfer!.getData('text/plain');
-        projectState.moveProject(prjId, this.type === 'active' ? ProjectStatus.Active : ProjectStatus.Done)
+        switch (this.type) {
+            case 'active':
+                projectState.moveProject(prjId, ProjectStatus.Active);
+                break;
+            case "review":
+                projectState.moveProject(prjId, ProjectStatus.Review);
+                break;
+            case "done":
+                projectState.moveProject(prjId, ProjectStatus.Done);
+                break;
+            default:
+                projectState.moveProject(prjId, ProjectStatus.New);
+        }
     }
 
     @AutoBind
@@ -47,10 +59,17 @@ export class ProjectList extends Component<HTMLDivElement, HTMLElement> implemen
         this.element.addEventListener('drop', this.dropHandler);
         projectState.addListener((projects: Project[]) => {
             const revelantProjects = projects.filter(prj => {
-                if (this.type === 'active') {
-                    return prj.status === ProjectStatus.Active
+                switch (this.type) {
+                    case "new":
+                        return prj.status === ProjectStatus.New;
+                    case "active":
+                        return prj.status === ProjectStatus.Active;
+                    case "review":
+                        return prj.status === ProjectStatus.Review;
+                    default:
+                        return prj.status === ProjectStatus.Done; 
                 }
-                return prj.status === ProjectStatus.Done;
+                
             });
             this.assignedProjects = revelantProjects;
             this.renderProjects();

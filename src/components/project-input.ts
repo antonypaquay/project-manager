@@ -70,8 +70,8 @@ export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
         e.preventDefault();
         const userInput = this.gatherUserInput();
         if (Array.isArray(userInput)) {
-            const [title, descrpition, people] = userInput;
-            projectState.addProject(title, descrpition, people);
+            const [title, description, people] = userInput;
+            projectState.addProject(title, description, people);
             this.clearInputs();
         }
     }
